@@ -1,0 +1,56 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Push a new beta build to Apple TestFlight"
+  lane :beta do
+    increment_build_number(xcodeproj: "ios/SocialSphere.xcodeproj")
+    build_app(
+      workspace: "ios/SocialSphere.xcworkspace",
+      scheme: "SocialSphere",
+      export_method: "app-store"
+    )
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Deploy a new production version to the App Store"
+  lane :release do
+    build_app(
+      workspace: "ios/SocialSphere.xcworkspace",
+      scheme: "SocialSphere"
+    )
+    upload_to_app_store(
+      force: true,
+      skip_screenshots: true
+    )
+  end
+end
+
+platform :android do
+  desc "Deploy a new beta build to Google Play Internal App Sharing"
+  lane :beta do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android/"
+    )
+    upload_to_play_store(
+      track: "internal",
+      skip_upload_images: true,
+      skip_upload_screenshots: true
+    )
+  end
+
+  desc "Deploy a new production build to Google Play"
+  lane :release do
+    gradle(
+      task: "bundle",
+      build_type: "Release",
+      project_dir: "android/"
+    )
+    upload_to_play_store(
+      track: "production"
+    )
+  end
+end

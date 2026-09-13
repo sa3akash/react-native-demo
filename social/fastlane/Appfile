@@ -1,0 +1,5 @@
+app_identifier("com.socialsphere.enterprise")
+apple_id("devops@socialsphere.enterprise")
+itc_team_id("98472910")
+team_id("A8B7C9D0E1")
+package_name("com.socialsphere.enterprise")
